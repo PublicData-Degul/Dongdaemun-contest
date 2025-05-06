@@ -2,11 +2,34 @@
 
 import Script from 'next/script'; // 외부 스크립트(kakao maps sdk) 불러오기 위해
 import { useEffect, useState } from 'react';
+import Papa from 'papaparse';
 
 // 상태 변수
 export default function KakaoMapPage() {
   const [isLoaded, setIsLoaded] = useState(false); // 지도 로드 여부
   const [map, setMap] = useState<any>(null);
+  const [streetTree, setStreetTree] = useState<{lat: Number; lng: number }[]>([]);
+
+  // 가로수길 좌표
+  useEffect(() => {
+    fetch('/streetTree.csv')
+      .then((res) => res.text())
+      .then((text) => {
+        Papa.parse(text, {
+          header: true,
+          skipEmptyLines: true,
+          complete: function(results){
+            console.log("헤더 목록:", results.meta.fields);
+            const parsed = results.data as any[];
+            const points = parsed.map((row) => ({
+              lat: parseFloat(row['수목위도']),
+              lng: parseFloat(row['수목경도']),
+            }))
+            setStreetTree(points);
+          },
+        });
+      });
+  }, []);
 
 
   // 지도 초기화 함수
@@ -17,11 +40,6 @@ export default function KakaoMapPage() {
       center: new window.kakao.maps.LatLng(37.5744, 127.0395), // 초기 좌표
       level: 4 // 확대 레벨 (작을수록 확대)
     };
-
-    //다부니 이미지 불러오기
-    const dabunisrc = '/icons/dabuni.webp';
-    const dabunisize = new window.kakao.maps.Size(40, 40);
-    const dabuni = new window.kakao.maps.MarkerImage(dabunisrc, dabunisize);
 
     //노인 복지 시설 좌표
     const elderly = [
@@ -86,7 +104,7 @@ export default function KakaoMapPage() {
       { lat: 37.6001268, lng: 127.0673903 },
       { lat: 37.57268283, lng: 127.0591464 },
       { lat: 37.57058465, lng: 127.0570303 }
-    ];    
+    ];
 
     // 지도 객체 생성
     const newMap = new window.kakao.maps.Map(container, options);
@@ -102,11 +120,25 @@ export default function KakaoMapPage() {
 
     // 노인 복지 시설 마커 생성성
     elderly.forEach((loc) => {
-      const marker = new window.kakao.maps.Marker({
-        position: new window.kakao.maps.LatLng(loc.lat, loc.lng),
-        image: dabuni
+      const position = new window.kakao.maps.LatLng(loc.lat, loc.lng);
+      const content = `<div style="font-size: 24px; z-index: 2;">❤️</div>`;
+      const customOverlay = new window.kakao.maps.CustomOverlay({
+        position,
+        content,
+        yAnchor: 1,
       });
-      marker.setMap(newMap);
+      customOverlay.setMap(newMap);
+    });
+
+    streetTree.forEach((tree) => {
+      const position = new window.kakao.maps.LatLng(tree.lat, tree.lng);
+      const content = `<div style="font-size: 20px; opacity: 0.2; z-index: 1;">🌳</div>`;
+      const customOverlay = new window.kakao.maps.CustomOverlay({
+        position,
+        content,
+        yAnchor: 1,
+      });
+      customOverlay.setMap(newMap);
     });
   };
 
@@ -121,12 +153,12 @@ export default function KakaoMapPage() {
 
   // 스크립트가 로드되면, 지도 초기화
   useEffect(() => {
-    if (isLoaded && !map) {
+    if (isLoaded && !map && streetTree.length > 0) {
       window.kakao.maps.load(() => {
         initMap();
       });
     }
-  }, [isLoaded, map]);
+  }, [isLoaded, map, streetTree]);
 
   return (
     <div>
