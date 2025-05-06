@@ -112,6 +112,7 @@ export default function KakaoMapPage() {
     // 중심 좌표 (동대문구)
     const centerPosition = new window.kakao.maps.LatLng(37.5744, 127.0395);
 
+    
     // 중심 좌표 마커 생성
     const centerMarker = new window.kakao.maps.Marker({
       position: centerPosition
@@ -129,7 +130,8 @@ export default function KakaoMapPage() {
       });
       customOverlay.setMap(newMap);
     });
-
+    
+    const streetTreeMarkers: any[] = [];
     streetTree.forEach((tree) => {
       const position = new window.kakao.maps.LatLng(tree.lat, tree.lng);
       const content = `<div style="font-size: 20px; opacity: 0.2; z-index: 1;">🌳</div>`;
@@ -139,6 +141,25 @@ export default function KakaoMapPage() {
         yAnchor: 1,
       });
       customOverlay.setMap(newMap);
+      streetTreeMarkers.push(customOverlay);
+    });
+
+    window.kakao.maps.event.addListener(newMap, 'zoom_changed', () => {
+      streetTreeMarkers.forEach((overlay) => {
+        overlay.setMap(newMap); // 나무 마커를 다시 설정
+        overlay.setContent('<div style="font-size: 20px; opacity: 0.2; z-index: 1;">🌳</div>'); // 불투명도 유지
+      });
+
+      elderly.forEach((loc) => {
+        const position = new window.kakao.maps.LatLng(loc.lat, loc.lng);
+        const content = `<div style="font-size: 24px; z-index: 2;">❤️</div>`;
+        const customOverlay = new window.kakao.maps.CustomOverlay({
+          position,
+          content,
+          yAnchor: 1,
+        });
+        customOverlay.setMap(newMap); // 하트 마커를 다시 설정
+      });
     });
   };
 
