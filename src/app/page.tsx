@@ -6,6 +6,7 @@ import Papa from "papaparse";
 
 export default function KakaoMapPage() {
   const [isLoaded, setIsLoaded] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [map, setMap] = useState<any>(null);
   const [streetTree, setStreetTree] = useState<{ lat: number; lng: number }[]>(
     []
@@ -20,6 +21,7 @@ export default function KakaoMapPage() {
           header: true,
           skipEmptyLines: true,
           complete: function (results) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const parsed = results.data as any[];
             const points = parsed.map((row) => ({
               lat: parseFloat(row["수목위도"]),
@@ -699,6 +701,7 @@ export default function KakaoMapPage() {
     });
 
     // 🌳 가로수 마커
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const streetTreeMarkers: any[] = [];
     streetTree.forEach((tree) => {
       const position = new window.kakao.maps.LatLng(tree.lat, tree.lng);
