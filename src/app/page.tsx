@@ -36,18 +36,18 @@ export default function KakaoMapPage() {
     const container = document.getElementById("map");
     const options = {
       center: new window.kakao.maps.LatLng(37.5744, 127.0395),
-      level: 4,
+      level: 6,
     };
 
     const newMap = new window.kakao.maps.Map(container, options);
     setMap(newMap);
 
-    // 중심 마커
-    const centerPosition = new window.kakao.maps.LatLng(37.5744, 127.0395);
-    new window.kakao.maps.Marker({
-      position: centerPosition,
-      map: newMap,
-    });
+    // // 중심 마커
+    // const centerPosition = new window.kakao.maps.LatLng(37.5744, 127.0395);
+    // new window.kakao.maps.Marker({
+    //   position: centerPosition,
+    //   map: newMap,
+    // });
 
     // 학교 마커
     const markerPositions = [
@@ -612,12 +612,13 @@ export default function KakaoMapPage() {
     ];
     markerPositions.forEach((loc) => {
       const position = new window.kakao.maps.LatLng(loc.lat, loc.lng);
-      const content = `<div style="font-size:24px;">🟡</div>`;
+      const content = `<div style="font-size: 20px; z-index: 100;">🟡</div>`;
       new window.kakao.maps.CustomOverlay({
         position,
         content,
         yAnchor: 1,
         map: newMap,
+        zIndex: 1,
       });
     });
 
@@ -687,12 +688,13 @@ export default function KakaoMapPage() {
     ];
     elderly.forEach((loc) => {
       const position = new window.kakao.maps.LatLng(loc.lat, loc.lng);
-      const content = `<div style="font-size: 24px;">🟣</div>`;
+      const content = `<div style="font-size: 20px; z-index: 1;">🟣</div>`;
       new window.kakao.maps.CustomOverlay({
         position,
         content,
         yAnchor: 1,
         map: newMap,
+        zIndex: 1,
       });
     });
 
@@ -705,17 +707,18 @@ export default function KakaoMapPage() {
         position,
         content,
         yAnchor: 1,
+        zIndex: 0,
       });
       overlay.setMap(newMap);
       streetTreeMarkers.push(overlay);
     });
 
-    // 줌 변경 시 마커 다시 세팅
-    window.kakao.maps.event.addListener(newMap, "zoom_changed", () => {
-      streetTreeMarkers.forEach((overlay) => {
-        overlay.setMap(newMap);
-      });
-    });
+    // // 줌 변경 시 마커 다시 세팅
+    // window.kakao.maps.event.addListener(newMap, "zoom_changed", () => {
+    //   streetTreeMarkers.forEach((overlay) => {
+    //     overlay.setMap(newMap);
+    //   });
+    // });
   };
 
   // 지도 크기 재조정
