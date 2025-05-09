@@ -49,7 +49,7 @@ export default function KakaoMapPage() {
       map: newMap,
     });
 
-    // 💙 학교 마커
+    // 학교 마커
     const markerPositions = [
       { lat: 37.5739950231496, lng: 127.073890977298, title: "서울장평초" },
       { lat: 37.5923093987643, lng: 127.055908478798, title: "서울청량초" },
@@ -612,7 +612,7 @@ export default function KakaoMapPage() {
     ];
     markerPositions.forEach((loc) => {
       const position = new window.kakao.maps.LatLng(loc.lat, loc.lng);
-      const content = `<div style="font-size: 24px;">💙</div>`;
+      const content = `<div style="font-size:24px;">🟡</div>`;
       new window.kakao.maps.CustomOverlay({
         position,
         content,
@@ -621,7 +621,7 @@ export default function KakaoMapPage() {
       });
     });
 
-    // ❤️ 노인복지 마커
+    // 🟣 노인복지 마커
     const elderly = [
       { lat: 37.57829744, lng: 127.0421996 },
       { lat: 37.56663423, lng: 127.0683889 },
@@ -687,7 +687,7 @@ export default function KakaoMapPage() {
     ];
     elderly.forEach((loc) => {
       const position = new window.kakao.maps.LatLng(loc.lat, loc.lng);
-      const content = `<div style="font-size: 24px;">❤️</div>`;
+      const content = `<div style="font-size: 24px;">🟣</div>`;
       new window.kakao.maps.CustomOverlay({
         position,
         content,
@@ -700,7 +700,7 @@ export default function KakaoMapPage() {
     const streetTreeMarkers: any[] = [];
     streetTree.forEach((tree) => {
       const position = new window.kakao.maps.LatLng(tree.lat, tree.lng);
-      const content = `<div style="font-size: 20px; opacity: 0.2;">🌳</div>`;
+      const content = `<div style="font-size: 20px; opacity: 0.1;">🌳</div>`;
       const overlay = new window.kakao.maps.CustomOverlay({
         position,
         content,
